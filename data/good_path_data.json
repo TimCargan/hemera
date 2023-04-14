@@ -1,0 +1,7 @@
+{
+  "data": "/ML/data",
+  "results": "/ML/results",
+  "dl": "/ML/dl",
+  "mlflow": "/ML/mlflow",
+  "cache": "/ML/cache"
+}

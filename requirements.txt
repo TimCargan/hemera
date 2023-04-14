@@ -1,0 +1,12 @@
+absl-py
+setuptools
+rich >= 12.4
+
+# ML thing
+numpy
+jax
+jaxtyping
+einops
+flax
+orbax
+chex
