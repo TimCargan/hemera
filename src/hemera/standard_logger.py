@@ -1,10 +1,11 @@
+import logging as py_logging
 import os
 import threading
 import time
 from abc import ABC
+
 import absl
 from absl import logging as absl_logging
-import logging as py_logging
 from rich.console import Console
 
 """
@@ -115,10 +116,8 @@ class LogFormatter(py_logging.Formatter):
         return str_output
 
 
-formatter = LogFormatter()
-
 # ABSL - Log Format
-absl_logging.use_absl_handler()
+formatter = LogFormatter()
 absl_logging.get_absl_handler().setFormatter(formatter)
 logger = absl_logging.get_absl_logger()
 
