@@ -4,7 +4,6 @@ import threading
 import time
 from abc import ABC
 
-import absl
 from absl import logging as absl_logging
 from rich.console import Console
 
@@ -121,7 +120,7 @@ formatter = LogFormatter()
 absl_logging.get_absl_handler().setFormatter(formatter)
 logger = absl_logging.get_absl_logger()
 
-logging = absl.logging
+logging = absl_logging
 
 def build_logger(*args, **kwargs):
     return logger
