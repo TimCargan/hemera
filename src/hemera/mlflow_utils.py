@@ -22,13 +22,14 @@ def ml_flow_track(f=None, /, *, expr_name, version):
     def wrap(f):
         def new_main(*args, **kwargs):
             # config = FLAGS.config
+            flag_dict = {k: {x.name: x.value for x in v} for k, v in list(FLAGS.flags_by_module_dict().items())}
             with mlflow.start_run(run_id=FLAGS.run_id) as run:
                 logging.info("run_id: %s", run.info.run_id)
 
                 if not FLAGS.run_id:
                     # Log params if a new exper
                     # TODO: else restore flag values?
-                    config_flat_dict = {".".join(k): v for k, v in flatten_dict(FLAGS.to_dict()).items()}
+                    config_flat_dict = {".".join(k): v for k, v in flatten_dict(flag_dict).items()}
                     mlflow.log_params(config_flat_dict)
                     # FLAG TAGS?
                     mlflow.set_tag("Version", version)
