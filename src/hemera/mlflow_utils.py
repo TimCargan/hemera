@@ -3,20 +3,15 @@ import os
 from absl import flags
 from flax.traverse_util import flatten_dict
 
-from hemera.path_translator import get_path
 from hemera.standard_logger import logging
 
 FLAGS = flags.FLAGS
 
 
 def ml_flow_track(f=None, /, *, expr_name, version):
-
-    art_base = get_path("mlflow")
-    mlflow.set_tracking_uri(f"sqlite:///{art_base}/tracking.sqlite")
     experiment = mlflow.get_experiment_by_name(expr_name)
     if not experiment:
-        art_base = os.path.join(art_base, "runs")
-        mlflow.create_experiment(expr_name, artifact_location=art_base)
+        mlflow.create_experiment(expr_name)
     mlflow.set_experiment(expr_name)
 
     def wrap(f):
@@ -29,7 +24,7 @@ def ml_flow_track(f=None, /, *, expr_name, version):
                 if not FLAGS.run_id:
                     # Log params if a new exper
                     # TODO: else restore flag values?
-                    config_flat_dict = {".".join(k): v for k, v in flatten_dict(flag_dict).items()}
+                    config_flat_dict = {".".join(k).replace("/", "."): v for k, v in flatten_dict(flag_dict).items()}
                     mlflow.log_params(config_flat_dict)
                     # FLAG TAGS?
                     mlflow.set_tag("Version", version)
