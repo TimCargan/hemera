@@ -6,8 +6,9 @@ from typing import Optional
 
 from hemera.standard_logger import logging
 
-flags.DEFINE_string("exper_name", None, "MLFlow Experiment Name")
-flags.DEFINE_string("run_id", default=None, help="Slurm RunID")
+flags.DEFINE_string("exper_name", None, "MlFlow Experiment Name")
+flags.DEFINE_string("run_id", default=None, help="MlFlow run_id, if set will restart the run")
+flags.DEFINE_string("run_name", default=None, help="MlFlow run display name")
 flags.DEFINE_list("module_filter", default=["absl", "tensorflow", "chex"], help="List of modules to filter out of logging")
 FLAGS = flags.FLAGS
 
@@ -29,7 +30,7 @@ def ml_flow_track(f=None, /, *, expr_name: Optional[str] = None, **out_kwargs):
                 mlflow.create_experiment(expr_name)
             mlflow.set_experiment(expr_name)
 
-            with mlflow.start_run(run_id=FLAGS.run_id) as run:
+            with mlflow.start_run(run_id=FLAGS.run_id, run_name=FLAGS.run_name) as run:
                 logging.info("run_id: %s", run.info.run_id)
 
                 if not FLAGS.run_id:
