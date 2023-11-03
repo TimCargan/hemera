@@ -6,7 +6,7 @@ from typing import Optional
 
 from hemera.standard_logger import logging
 
-flags.DEFINE_string("exper_name", None, "MlFlow Experiment Name")
+flags.DEFINE_string("expr_name", None, "MlFlow Experiment Name")
 flags.DEFINE_string("run_id", default=None, help="MlFlow run_id, if set will restart the run")
 flags.DEFINE_string("run_name", default=None, help="MlFlow run display name")
 flags.DEFINE_list("module_filter", default=["absl", "tensorflow", "chex"], help="List of modules to filter out of logging")
@@ -24,8 +24,8 @@ def ml_flow_track(f=None, /, *, expr_name: Optional[str] = None, **out_kwargs):
     def wrap(f):
         def new_main(*args, **kwargs):
             # Set the exper name
-            exper_name = FLAGS.get_flag_value("expr_name", expr_name) # Use flag if set otherwise value passed in
-            experiment = mlflow.get_experiment_by_name(exper_name)
+            _expr_name = FLAGS.get_flag_value("expr_name", expr_name) # Use flag if set otherwise value passed in
+            experiment = mlflow.get_experiment_by_name(_expr_name)
             if not experiment:
                 mlflow.create_experiment(expr_name)
             mlflow.set_experiment(expr_name)
@@ -45,7 +45,7 @@ def ml_flow_track(f=None, /, *, expr_name: Optional[str] = None, **out_kwargs):
                     mlflow.log_params(config_flat_dict)
 
                     # Log Tags
-                    for k, v in out_kwargs:
+                    for k, v in out_kwargs.items():
                         mlflow.set_tag(k, v)
                     mlflow.set_tag("SLURM_ID", os.environ.get("SLURM_JOB_ID", "0"))
                 f(*args, **kwargs)
