@@ -1,5 +1,6 @@
 import mlflow
 import os
+import socket
 from absl import flags
 from flax.traverse_util import flatten_dict
 from typing import Optional
@@ -51,6 +52,7 @@ def ml_flow_track(f=None, /, *, exper_name: Optional[str] = None, **out_kwargs):
                     for k, v in out_kwargs.items():
                         mlflow.set_tag(k, v)
                     mlflow.set_tag("SLURM_ID", os.environ.get("SLURM_JOB_ID", "0"))
+                    mlflow.set_tag("HOST", socket.gethostname())
                 f(*args, **kwargs)
 
         return new_main
