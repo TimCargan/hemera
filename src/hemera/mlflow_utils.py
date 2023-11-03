@@ -6,14 +6,14 @@ from typing import Optional
 
 from hemera.standard_logger import logging
 
-flags.DEFINE_string("expr_name", None, "MlFlow Experiment Name")
+flags.DEFINE_string("exper_name", None, "MlFlow Experiment Name")
 flags.DEFINE_string("run_id", default=None, help="MlFlow run_id, if set will restart the run")
 flags.DEFINE_string("run_name", default=None, help="MlFlow run display name")
 flags.DEFINE_list("module_filter", default=["absl", "tensorflow", "chex"], help="List of modules to filter out of logging")
 FLAGS = flags.FLAGS
 
 
-def ml_flow_track(f=None, /, *, expr_name: Optional[str] = None, **out_kwargs):
+def ml_flow_track(f=None, /, *, exper_name: Optional[str] = None, **out_kwargs):
     """Decorator to run MLFlow tracking.
 
     :param f: Function to wrap
@@ -24,11 +24,11 @@ def ml_flow_track(f=None, /, *, expr_name: Optional[str] = None, **out_kwargs):
     def wrap(f):
         def new_main(*args, **kwargs):
             # Set the exper name
-            _expr_name = FLAGS.get_flag_value("expr_name", expr_name) # Use flag if set otherwise value passed in
-            experiment = mlflow.get_experiment_by_name(_expr_name)
+            _exper_name = FLAGS.get_flag_value("exper_name", exper_name)  # Use flag if set otherwise value passed in
+            experiment = mlflow.get_experiment_by_name(_exper_name)
             if not experiment:
-                mlflow.create_experiment(expr_name)
-            mlflow.set_experiment(expr_name)
+                mlflow.create_experiment(_exper_name)
+            mlflow.set_experiment(_exper_name)
 
             with mlflow.start_run(run_id=FLAGS.run_id, run_name=FLAGS.run_name) as run:
                 logging.info("run_id: %s", run.info.run_id)
