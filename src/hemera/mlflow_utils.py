@@ -21,10 +21,13 @@ def ml_flow_track(f=None, /, *, exper_name: Optional[str] = None, **out_kwargs):
     :param kwargs: A KV dict of dict[str,str] of tags to log for the experimet
     :return:
     """
+    logging.debug("Make MfFlow wrap")
     def wrap(f):
         def new_main(*args, **kwargs):
             # Set the exper name
             _exper_name = FLAGS.get_flag_value("exper_name", exper_name)  # Use flag if set otherwise value passed in
+            logging.info(f"Set Experiment: {_exper_name=}")
+
             experiment = mlflow.get_experiment_by_name(_exper_name)
             if not experiment:
                 mlflow.create_experiment(_exper_name)
