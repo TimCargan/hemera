@@ -13,7 +13,11 @@ def push_job_run(name, status="Complete", runtime: datetime.timedelta = None):
     else:
         runtime = "Unknown"
 
-    headline = f"Run {name} {status}"
+    # Load the slurm job name
+    sr = os.environ.get("SLURM_JOB_NAME", None)
+    sr = f" (in {sr})" if sr else ""
+
+    headline = f"Run {name}{sr} {status}"
     body = f"Job ran for {runtime}"
     ifttt_push_notification(headline, body)
 
