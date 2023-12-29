@@ -1,9 +1,10 @@
-import mlflow
 import os
 import socket
+from typing import Optional
+
+import mlflow
 from absl import flags
 from flax.traverse_util import flatten_dict
-from typing import Optional
 
 from hemera.standard_logger import logging
 
@@ -18,8 +19,8 @@ def ml_flow_track(f=None, /, *, exper_name: Optional[str] = None, **out_kwargs):
     """Decorator to run MLFlow tracking.
 
     :param f: Function to wrap
-    :param expr_name: The experiment name, Note: this is overwritten by FLAG.exper_name
-    :param kwargs: A KV dict of dict[str,str] of tags to log for the experimet
+    :param exper_name: The experiment name, Note: this is overwritten by FLAG.exper_name
+    :param kwargs: A KV dict of dict[str,str] of tags to log for the experiment
     :return:
     """
     logging.debug("Make MfFlow wrap")
